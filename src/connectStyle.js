@@ -7,6 +7,7 @@ import { StyleSheet } from "react-native";
 
 import Theme, { ThemeShape } from "./Theme";
 import { resolveComponentStyle } from "./resolveComponentStyle";
+import StyleProvider from './StyleProvider';
 
 let themeCache = {};
 
@@ -121,19 +122,7 @@ export default (
     }
 
     class StyledComponent extends React.Component {
-      static contextTypes = {
-        theme: ThemeShape,
-        // The style inherited from the parent
-        // parentStyle: PropTypes.object,
-        parentPath: PropTypes.array
-      };
-
-      static childContextTypes = {
-        // Provide the parent style to child components
-        // parentStyle: PropTypes.object,
-        // resolveStyle: PropTypes.func,
-        parentPath: PropTypes.array
-      };
+      static contextType = StyleProvider.Context;
 
       static propTypes = {
         // Element style that overrides any other style of the component
@@ -238,16 +227,6 @@ export default (
             ...this.getStyleNames(this.props)
           ];
         }
-      }
-
-      getChildContext() {
-        return {
-          // parentStyle: this.props.virtual ?
-          //   this.context.parentStyle :
-          //   this.state.childrenStyle,
-          // resolveStyle: this.resolveConnectedComponentStyle,
-          parentPath: this.getParentPath()
-        };
       }
 
       UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
@@ -389,12 +368,18 @@ export default (
 
         const { addedProps, style } = this.state;
         return (
-          <WrappedComponent
-            {...this.props}
-            {...addedProps}
-            style={style}
-            ref={this.setWrappedInstance}
-          />
+          <StyleProvider.Context.Provider value={{
+            ...this.context,
+            parentPath: this.getParentPath()
+          }}>
+            <WrappedComponent
+              {...this.props}
+              {...addedProps}
+              style={style}
+              ref={this.setWrappedInstance}
+            />
+
+          </StyleProvider.Context.Provider>
         );
       }
     }

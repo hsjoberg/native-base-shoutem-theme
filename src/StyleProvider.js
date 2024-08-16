@@ -6,48 +6,57 @@ import normalizeStyle from './StyleNormalizer/normalizeStyle';
 /**
  *  Provides a theme to child components trough context.
  */
-export default class StyleProvider extends React.Component {
-  static propTypes = {
-    children: PropTypes.element.isRequired,
-    style: PropTypes.object,
-  };
+// export default class StyleProvider extends React.Component {
+//   static propTypes = {
+//     children: PropTypes.element.isRequired,
+//     style: PropTypes.object,
+//   };
 
-  static defaultProps = {
-    style: {},
-  };
+//   static defaultProps = {
+//     style: {},
+//   };
 
-  static childContextTypes = {
-    theme: ThemeShape.isRequired,
-  };
+//   static childContextTypes = {
+//     theme: ThemeShape.isRequired,
+//   };
 
-  constructor(props, context) {
-    super(props, context);
-    this.state = {
-      theme: this.createTheme(props),
-    };
-  }
+//   constructor(props, context) {
+//     super(props, context);
+//     this.state = {
+//       theme: this.createTheme(props),
+//     };
+//   }
 
-  getChildContext() {
-    return {
-      theme: this.state.theme,
-    };
-  }
+//   getChildContext() {
+//     return {
+//       theme: this.state.theme,
+//     };
+//   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.style !== this.props.style) {
-      this.setState({
-        theme: this.createTheme(nextProps),
-      });
-    }
-  }
+//   UNSAFE_componentWillReceiveProps(nextProps) {
+//     if (nextProps.style !== this.props.style) {
+//       this.setState({
+//         theme: this.createTheme(nextProps),
+//       });
+//     }
+//   }
 
-  createTheme(props) {
-    return new Theme(props.style);
-  }
+//   createTheme(props) {
+//     return new Theme(props.style);
+//   }
 
-  render() {
-    const { children } = this.props;
+//   render() {
+//     const { children } = this.props;
 
-    return Children.only(children);
+//     return Children.only(children);
+//   }
+// }
+
+
+const NativeBaseContext = React.createContext();
+export default {
+  Context: NativeBaseContext,
+  fixTheme: function (theme) {
+    return new Theme(theme);
   }
 }
